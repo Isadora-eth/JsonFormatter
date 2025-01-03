@@ -1,0 +1,19 @@
+{
+  "name": "json-formatter-cli",
+  "version": "0.1.0",
+  "description": "A command-line tool for formatting, validating and highlighting JSON",
+  "main": "index.js",
+  "bin": {
+    "jsonf": "./bin/jsonf.js"
+  },
+  "scripts": {
+    "start": "node bin/jsonf.js"
+  },
+  "keywords": ["json", "formatter", "cli", "pretty-print", "validation"],
+  "author": "Isadora",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.4.1"
+  }
+}

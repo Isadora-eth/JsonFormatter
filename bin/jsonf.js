@@ -25,27 +25,48 @@ program
         process.exit(1);
       }
     } else {
-      console.log(chalk.yellow('Reading from stdin...'));
-      process.exit(0);
+      let stdinData = '';
+      process.stdin.setEncoding('utf8');
+      
+      process.stdin.on('readable', () => {
+        const chunk = process.stdin.read();
+        if (chunk !== null) {
+          stdinData += chunk;
+        }
+      });
+      
+      process.stdin.on('end', () => {
+        if (!stdinData.trim()) {
+          console.error(chalk.red('No input provided'));
+          process.exit(1);
+        }
+        processJson(stdinData, options);
+      });
+      
+      return;
     }
 
-    try {
-      const parsed = JSON.parse(jsonContent);
-      const formatted = options.compact ? 
-        JSON.stringify(parsed) : 
-        JSON.stringify(parsed, null, parseInt(options.indent));
-      
-      if (options.color !== false) {
-        console.log(chalk.green('✓ Valid JSON'));
-        console.log(formatJsonWithColors(formatted));
-      } else {
-        console.log(formatted);
-      }
-    } catch (error) {
-      console.error(chalk.red(`Invalid JSON: ${error.message}`));
-      process.exit(1);
-    }
+    processJson(jsonContent, options);
   });
+
+function processJson(jsonContent, options) {
+  try {
+    const parsed = JSON.parse(jsonContent);
+    const formatted = options.compact ? 
+      JSON.stringify(parsed) : 
+      JSON.stringify(parsed, null, parseInt(options.indent));
+    
+    if (options.color !== false) {
+      console.log(chalk.green('✓ Valid JSON'));
+      console.log(formatJsonWithColors(formatted));
+    } else {
+      console.log(formatted);
+    }
+  } catch (error) {
+    console.error(chalk.red(`Invalid JSON: ${error.message}`));
+    process.exit(1);
+  }
+}
 
 function formatJsonWithColors(jsonString) {
   return jsonString

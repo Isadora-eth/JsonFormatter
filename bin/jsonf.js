@@ -70,10 +70,12 @@ function processJson(jsonContent, options) {
 
 function formatJsonWithColors(jsonString) {
   return jsonString
-    .replace(/(".*?")/g, chalk.green('$1'))
-    .replace(/(\d+)/g, chalk.cyan('$1'))
-    .replace(/(true|false)/g, chalk.yellow('$1'))
-    .replace(/null/g, chalk.gray('null'));
+    .replace(/("(?:[^"\\]|\\.)*")\s*:/g, chalk.blue('$1') + chalk.white(':'))
+    .replace(/:\s*("(?:[^"\\]|\\.)*")/g, ': ' + chalk.green('$1'))
+    .replace(/:\s*(-?\d+\.?\d*)/g, ': ' + chalk.cyan('$1'))
+    .replace(/:\s*(true|false)/g, ': ' + chalk.yellow('$1'))
+    .replace(/:\s*(null)/g, ': ' + chalk.gray('$1'))
+    .replace(/([{}[\],])/g, chalk.magenta('$1'));
 }
 
 program.parse();

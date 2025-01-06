@@ -1,0 +1,1 @@
+{"users":[{"id":1,"name":"Alice","email":"alice@example.com","preferences":{"theme":"dark","notifications":true},"tags":["admin","developer"]},{"id":2,"name":"Bob","email":"bob@example.com","preferences":{"theme":"light","notifications":false},"tags":["user"]}],"metadata":{"version":"1.0.0","created":"2025-01-03","lastModified":null}}

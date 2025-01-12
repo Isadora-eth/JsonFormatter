@@ -14,6 +14,8 @@ program
   .option('-c, --compact', 'compact output')
   .option('-i, --indent <size>', 'indentation size', '2')
   .option('--no-color', 'disable color output')
+  .option('--validate-only', 'only validate JSON, don\'t format')
+  .option('-s, --sort-keys', 'sort object keys alphabetically')
   .action((file, options) => {
     let jsonContent;
     
@@ -51,7 +53,17 @@ program
 
 function processJson(jsonContent, options) {
   try {
-    const parsed = JSON.parse(jsonContent);
+    let parsed = JSON.parse(jsonContent);
+    
+    if (options.validateOnly) {
+      console.log(chalk.green('✓ JSON is valid'));
+      return;
+    }
+    
+    if (options.sortKeys) {
+      parsed = sortObjectKeys(parsed);
+    }
+    
     const formatted = options.compact ? 
       JSON.stringify(parsed) : 
       JSON.stringify(parsed, null, parseInt(options.indent));
@@ -66,6 +78,19 @@ function processJson(jsonContent, options) {
     console.error(chalk.red(`Invalid JSON: ${error.message}`));
     process.exit(1);
   }
+}
+
+function sortObjectKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(sortObjectKeys);
+  } else if (obj !== null && typeof obj === 'object') {
+    const sorted = {};
+    Object.keys(obj).sort().forEach(key => {
+      sorted[key] = sortObjectKeys(obj[key]);
+    });
+    return sorted;
+  }
+  return obj;
 }
 
 function formatJsonWithColors(jsonString) {
